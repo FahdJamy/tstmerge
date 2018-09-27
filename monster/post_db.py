@@ -1,4 +1,5 @@
 import psycopg2, os
+from flask import jsonify
 from pprint import pprint
 from config import Config
 
@@ -83,3 +84,16 @@ class DB_ALCAMEY ():
 			print ('username alread taken')
 		resp = self.create_user(username, email)
 		print (resp)
+
+	def delete_user(self, username):
+
+		try:
+			result = self.find_by_name(username)
+		except (Exception, psycopg2.DatabaseError) as e:
+			print (e)
+			return None
+			
+		if result:
+			sql_statetment = "DELETE FROM users WHERE username = '{}'".format(username)
+			return jsonify('message' : '{} deleted'.format(username))
+		return jsonify ('message' : '{} doesnt exit'.format(username))
